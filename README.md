@@ -13,9 +13,11 @@ Sistem de e-ticketing cu functionalitati pentru a creea infrastructura unui MVP 
 6. **Asignarea unui bilet către un utilizator** - Utilizatorii pot achiziționa bilete la evenimente.
 7. **Upgrade utilizator** - Trecerea unui utilizator de la statutul normal la cel premium.
 8. **Transferul unui bilet între utilizatori** - Permite utilizatorilor să transfere bilete între ei.
-9. **Refund** - Utilizatorii pot returna biletele și primi o rambursare.
-10. **Feedback pentru evenimente** - Utilizatorii pot oferi feedback pentru evenimentele la care au participat.
+9. **Refund** - Utilizatorii pot returna biletele și primi o rambursare. (To be extended, cand introduc DB-ul )
+10. **Feedback pentru evenimente** - Utilizatorii pot oferi feedback pentru evenimentele la care au participat. - TO DO
 11. **Schimbarea datei evenimentului** - Organizatorii pot modifica data desfășurării evenimentelor.
+12. **Crearea unui eveniment** - Se poate aduaga un eveniment
+13. **Toate CRUD-urile posibile pe obiectele create**
 
 ## Tipuri de Obiecte
 
