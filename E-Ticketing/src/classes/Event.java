@@ -8,7 +8,7 @@ public abstract class Event {
     private String eventName;
     private Date eventDate;
     private String eventLocation;
-    private double BasicTicketPrice;
+    private double basicTicketPrice;
     private int numberOfTickets;
     private boolean isSoldOut;
     private int ticketsSold;
@@ -16,11 +16,11 @@ public abstract class Event {
     public Event() {
     }
 
-    public Event(String eventName, Date eventDate, String eventLocation, double BasicTicketPrice, int numberOfTickets) {
+    public Event(String eventName, Date eventDate, String eventLocation, double basicTicketPrice, int numberOfTickets) {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventLocation = eventLocation;
-        this.BasicTicketPrice = BasicTicketPrice;
+        this.basicTicketPrice = basicTicketPrice;
         this.numberOfTickets = numberOfTickets;
         this.isSoldOut = false;
         this.ticketsSold = 0;
@@ -44,7 +44,7 @@ public abstract class Event {
     }
 
     public double getBasicTicketPrice() {
-        return BasicTicketPrice;
+        return basicTicketPrice;
     }
 
     public int getNumberOfTickets() {
@@ -79,7 +79,7 @@ public abstract class Event {
     }
 
     public void setBasicTicketPrice(double BasicTicketPrice) {
-        this.BasicTicketPrice = BasicTicketPrice;
+        this.basicTicketPrice = BasicTicketPrice;
 
     }
 
@@ -100,8 +100,21 @@ public abstract class Event {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Event) {
+            Event event = (Event) obj;
+            return this.eventName.equals(event.eventName) && this.eventDate.equals(event.eventDate) && this.eventLocation.equals(event.eventLocation);
+        }
+        return false;
+    }
+
+
     public String toString() {
-        return "Event: " + this.eventName + " on " + this.eventDate + " at " + this.eventLocation + " with price: " + this.BasicTicketPrice + " and number of tickets: " + this.numberOfTickets;
+        return "Event: " + this.eventName + " on " + this.eventDate + " at " + this.eventLocation + " with price: " + this.basicTicketPrice + " and number of tickets: " + this.numberOfTickets;
     }
 
 

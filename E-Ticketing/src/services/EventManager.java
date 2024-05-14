@@ -1,22 +1,21 @@
 package services;
-
-import java.util.ArrayList;
-
 import classes.AeroEvent;
 import classes.AutomotiveEvent;
+import java.util.ArrayList;
 import classes.Event;
 import classes.MusicalEvent;
 import classes.SpecialEvent;
+import java.util.List;
 
 import java.util.Scanner;
 import java.sql.Date;
 
 public class EventManager {
 
-    public static ArrayList <Event> EventsEnrolled;
+    public static List <Event> eventsEnrolled;
 
     public EventManager() {
-        EventsEnrolled = new ArrayList<Event>();
+        eventsEnrolled = new ArrayList<Event>();
     }
 
     public void registerEvent(Scanner scanner, String name, Date date, String location, double price, int numberOfTickets) {
@@ -57,7 +56,7 @@ public class EventManager {
             AeroEvent event = new AeroEvent(name, date, location, price, numberOfTickets, airline, pilots, isInternationalBool);
 
          
-            EventsEnrolled.add(event);
+            eventsEnrolled.add(event);
 
         } else if(type.equals("Auto")){
            
@@ -85,7 +84,7 @@ public class EventManager {
             }
 
             AutomotiveEvent event = new AutomotiveEvent(name, date, location, price, numberOfTickets, carBrand, isElectricBool, sponsors);
-            EventsEnrolled.add(event);
+            eventsEnrolled.add(event);
 
 
         } else if(type.equals("Special")){
@@ -97,7 +96,7 @@ public class EventManager {
             String description = scanner.nextLine();
 
             SpecialEvent event = new SpecialEvent(name, date, location, price, numberOfTickets, specialType, description);
-            EventsEnrolled.add(event);
+            eventsEnrolled.add(event);
 
 
 
@@ -114,7 +113,7 @@ public class EventManager {
             String genre = scanner.nextLine();
 
             MusicalEvent event = new MusicalEvent(name, date, location, price, numberOfTickets, bandName, genre, Intsongs);
-            EventsEnrolled.add(event);
+            eventsEnrolled.add(event);
 
         } else {
            
@@ -126,16 +125,16 @@ public class EventManager {
     }
 
     public void deleteEvent(String name) {
-        for (Event event : EventsEnrolled) {
+        for (Event event : eventsEnrolled) {
             if (event.getEventName().equals(name)) {
-                EventsEnrolled.remove(event);
+                eventsEnrolled.remove(event);
                 break;
             }
         }
     }
 
     public void updateEvent(String name, Date date, String location, double price) {
-        for (Event event : EventsEnrolled) {
+        for (Event event : eventsEnrolled) {
             if (event.getEventName().equals(name)) {
                 event.setEventDate(date);
                 event.setEventLocation(location);
@@ -145,12 +144,12 @@ public class EventManager {
         }
     }
 
-    public ArrayList <Event> getEventsEnrolled() {
-        return EventsEnrolled;
+    public List <Event> geteventsEnrolled() {
+        return eventsEnrolled;
     }
 
     public static Event getEventByName(String name) {
-        for (Event event : EventsEnrolled) {
+        for (Event event : eventsEnrolled) {
             if (event.getEventName().equals(name)) {
                 return event;
             }
@@ -159,7 +158,7 @@ public class EventManager {
     }
 
     public void printEvents() {
-        for (Event event : EventsEnrolled) {
+        for (Event event : eventsEnrolled) {
             System.out.println(event);
         }
     }

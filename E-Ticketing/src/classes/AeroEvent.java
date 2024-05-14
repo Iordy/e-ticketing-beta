@@ -13,8 +13,8 @@ public final class AeroEvent extends Event {
 
      */
 
-    public AeroEvent(String eventName, Date eventDate, String eventLocation, double BasicTicketPrice, int numberOfTickets, String airline, ArrayList<String> pilots, boolean isInternational) {
-        super(eventName, eventDate, eventLocation, BasicTicketPrice, numberOfTickets);
+    public AeroEvent(String eventName, Date eventDate, String eventLocation, double basicTicketPrice, int numberOfTickets, String airline, ArrayList<String> pilots, boolean isInternational) {
+        super(eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets);
         this.airline = airline;
         this.pilots = pilots;
         this.isInternational = isInternational;

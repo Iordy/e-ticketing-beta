@@ -39,12 +39,12 @@ public abstract class Ticket {
         return isPaid;
     }
 
-    public void PayTicket()
+    public void payTicket()
     {
         this.isPaid = true;
     }
 
-    public void ChangeBearer(User newUser)
+    public void changeTicketBearer(User newUser)
     {
         this.userId = newUser.getId();
     }

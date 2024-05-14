@@ -85,7 +85,7 @@ public final class Menu {
                     String userEmail = scanner.nextLine();
                     System.out.println("Enter the event name:");
                     String event = scanner.nextLine();
-                    ticketManager.buyTicket(userEmail, event);
+                    ticketManager.buyTicket(scanner, userEmail, event);
                     break;
                 case "4":
                     ticketManager.showAttendees();
@@ -144,7 +144,7 @@ public final class Menu {
                     System.out.println("Enter the event name:");
                     String eventName2 = scanner.nextLine();
 
-                    ticketManager.ChangeTicketBearer(email2, eventName2);
+                    ticketManager.changeTicketBearer(email2, eventName2);
                 
                     break;
                 case "12":

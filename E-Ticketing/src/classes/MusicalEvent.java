@@ -7,8 +7,8 @@ public final class MusicalEvent extends Event{
     private String musicGenre;
     private int numberOfSongs;
 
-    public MusicalEvent(String eventName, Date eventDate, String eventLocation, double BasicTicketPrice, int numberOfTickets, String bandName, String musicGenre, int numberOfSongs) {
-        super(eventName, eventDate, eventLocation, BasicTicketPrice, numberOfTickets);
+    public MusicalEvent(String eventName, Date eventDate, String eventLocation, double basicTicketPrice, int numberOfTickets, String bandName, String musicGenre, int numberOfSongs) {
+        super(eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets);
         this.bandName = bandName;
         this.musicGenre = musicGenre;
         this.numberOfSongs = numberOfSongs;

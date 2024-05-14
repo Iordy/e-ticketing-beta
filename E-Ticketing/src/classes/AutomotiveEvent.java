@@ -9,8 +9,8 @@ public final class AutomotiveEvent extends Event {
     private boolean isElectric;
     private List<String> sponsors;
 
-    public AutomotiveEvent(String eventName, Date eventDate, String eventLocation, double BasicTicketPrice, int numberOfTickets, String carBrand, boolean isElectric, List<String> sponsors) {
-        super(eventName, eventDate, eventLocation, BasicTicketPrice, numberOfTickets);
+    public AutomotiveEvent(String eventName, Date eventDate, String eventLocation, double basicTicketPrice, int numberOfTickets, String carBrand, boolean isElectric, List<String> sponsors) {
+        super(eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets);
         this.carBrand = carBrand;
         this.isElectric = isElectric;
         this.sponsors = sponsors;
