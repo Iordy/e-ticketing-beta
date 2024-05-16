@@ -5,20 +5,25 @@ import java.util.ArrayList;
 import classes.Event;
 import classes.MusicalEvent;
 import classes.SpecialEvent;
-import java.util.List;
-
 import java.util.Scanner;
+
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class EventManager {
 
-    public static List <Event> eventsEnrolled;
+    
+    public static dbService dbService;
+    public static Connection connection = services.dbService.getConnection();
 
-    public EventManager() {
-        eventsEnrolled = new ArrayList<Event>();
-    }
 
-    public void registerEvent(Scanner scanner, String name, Date date, String location, double price, int numberOfTickets) {
+
+    public void registerEvent(Scanner scanner, String name, Date date, String location, double price, int numberOfTickets)
+    throws SQLException 
+    {
 
         System.out.println("Input the event type:[Aero / Auto / Special / Concert]");
 
@@ -53,10 +58,18 @@ public class EventManager {
                 isInternationalBool = true;
             }
 
-            AeroEvent event = new AeroEvent(name, date, location, price, numberOfTickets, airline, pilots, isInternationalBool);
+//            AeroEvent event = new AeroEvent(name, date, location, price, numberOfTickets, airline, pilots, isInternationalBool);
 
-         
-            eventsEnrolled.add(event);
+            try{
+                    connection.createStatement().executeUpdate("INSERT INTO EVENT (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 'false', '0', 'Aero')");
+                    int eventId = connection.createStatement().executeQuery("SELECT eventId FROM event WHERE eventName = '" + name + "'").getInt(1);
+                    connection.createStatement().executeUpdate("INSERT INTO AeroEvent (id, airline, isInternational) VALUES ('" + eventId + "', '" + airline + "', '" + isInternationalBool + "')");
+                    connection.createStatement().executeUpdate("INSERT INTO AeroEventPilots (eventId, pilotName) VALUES ('" + eventId + "', '" + pilots + "')");
+            }
+
+            catch(SQLException e){
+                System.out.println(e);
+            }
 
         } else if(type.equals("Auto")){
            
@@ -83,8 +96,18 @@ public class EventManager {
                 sponsors.add(sponsor);
             }
 
-            AutomotiveEvent event = new AutomotiveEvent(name, date, location, price, numberOfTickets, carBrand, isElectricBool, sponsors);
-            eventsEnrolled.add(event);
+          //  AutomotiveEvent event = new AutomotiveEvent(name, date, location, price, numberOfTickets, carBrand, isElectricBool, sponsors);
+           
+            
+          try{
+            connection.createStatement().executeUpdate("INSERT INTO EVENT (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 'false', '0', 'Auto')");
+            int eventId = connection.createStatement().executeQuery("SELECT eventId FROM event WHERE eventName = '" + name + "'").getInt(1);
+            connection.createStatement().executeUpdate("INSERT INTO AutomotiveEvent (id, carBrand, isElectric) VALUES ('" + eventId + "', '" + carBrand + "', '" + isElectricBool + "')");
+            connection.createStatement().executeUpdate("INSERT INTO AutomotiveEventSponsors (eventId, sponsorName) VALUES ('" + eventId + "', '" + sponsors + "')");
+          }
+          catch(SQLException e){
+              System.out.println(e);
+          }
 
 
         } else if(type.equals("Special")){
@@ -95,9 +118,16 @@ public class EventManager {
             System.out.println("Input the description:");
             String description = scanner.nextLine();
 
-            SpecialEvent event = new SpecialEvent(name, date, location, price, numberOfTickets, specialType, description);
-            eventsEnrolled.add(event);
-
+          //  SpecialEvent event = new SpecialEvent(name, date, location, price, numberOfTickets, specialType, description);
+            
+            try{
+                connection.createStatement().executeUpdate("INSERT INTO EVENT (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 'false', '0', 'Special')");
+                int eventId = connection.createStatement().executeQuery("SELECT eventId FROM event WHERE eventName = '" + name + "'").getInt(1);
+                connection.createStatement().executeUpdate("INSERT INTO SpecialEvent (id, specialType, description) VALUES ('" + eventId + "', '" + specialType + "', '" + description + "')");
+            }
+            catch(SQLException e){
+                System.out.println(e);
+            }
 
 
         } else if(type.equals("Concert")){
@@ -112,8 +142,16 @@ public class EventManager {
             System.out.println("What Genre is the band?");
             String genre = scanner.nextLine();
 
-            MusicalEvent event = new MusicalEvent(name, date, location, price, numberOfTickets, bandName, genre, Intsongs);
-            eventsEnrolled.add(event);
+           // MusicalEvent event = new MusicalEvent(name, date, location, price, numberOfTickets, bandName, genre, Intsongs);
+            
+            try{
+                connection.createStatement().executeUpdate("INSERT INTO EVENT (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 'false', '0', 'Concert')");
+                int eventId = connection.createStatement().executeQuery("SELECT eventId FROM event WHERE eventName = '" + name + "'").getInt(1);
+                connection.createStatement().executeUpdate("INSERT INTO MusicalEvent (id, bandName, genre, numberOfSongs) VALUES ('" + eventId + "', '" + bandName + "', '" + genre + "', '" + Intsongs + "')");
+            }
+            catch(SQLException e){
+                System.out.println(e);
+            }
 
         } else {
            
@@ -125,42 +163,59 @@ public class EventManager {
     }
 
     public void deleteEvent(String name) {
-        for (Event event : eventsEnrolled) {
-            if (event.getEventName().equals(name)) {
-                eventsEnrolled.remove(event);
-                break;
-            }
+       
+        String query = "DELETE FROM event WHERE name = '" + name + "'";
+
+        try {
+            connection.createStatement().executeUpdate(query);
+        } catch (Exception e) {
+            System.out.println(e);
         }
+
+
     }
 
     public void updateEvent(String name, Date date, String location, double price) {
-        for (Event event : eventsEnrolled) {
-            if (event.getEventName().equals(name)) {
-                event.setEventDate(date);
-                event.setEventLocation(location);
-                event.setBasicTicketPrice(price);
-                break;
+            
+            String query = "UPDATE events SET date = '" + date + "', location = '" + location + "', price = '" + price + "' WHERE name = '" + name + "'";
+    
+            try {
+                connection.createStatement().executeUpdate(query);
+            } catch (Exception e) {
+                System.out.println(e);
             }
-        }
     }
 
-    public List <Event> geteventsEnrolled() {
-        return eventsEnrolled;
+    public ResultSet getEventsEnrolled() {
+        
+        String query = "SELECT * FROM events";
+        ResultSet result = null;
+
+        try {
+             result = connection.createStatement().executeQuery(query);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return result;
     }
 
-    public static Event getEventByName(String name) {
-        for (Event event : eventsEnrolled) {
-            if (event.getEventName().equals(name)) {
-                return event;
-            }
+    public static ResultSet getEventByName(String name) {
+        
+        String query = "SELECT * FROM events WHERE name = '" + name + "'";
+        ResultSet result = null;
+
+        try{
+             result= connection.createStatement().executeQuery(query);
         }
-        return null;
+        catch(SQLException e){
+            System.out.println(e);
+        }
+
+        //return the event
+
+        return result;
     }
 
-    public void printEvents() {
-        for (Event event : eventsEnrolled) {
-            System.out.println(event);
-        }
-    }
     
 }
