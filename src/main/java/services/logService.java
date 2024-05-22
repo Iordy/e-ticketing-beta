@@ -18,7 +18,7 @@ public class logService {
             System.out.println("am ajuns");
             boolean isNewFile = !file.exists();
 
-            FileWriter fileWriter = new FileWriter(AUDIT_FILE_PATH, true); // Appends to file
+            FileWriter fileWriter = new FileWriter(AUDIT_FILE_PATH, true); 
             CSVWriter csvWriter = new CSVWriter(fileWriter);
 
             if (isNewFile) {
@@ -32,7 +32,7 @@ public class logService {
 
             csvWriter.close();
         } catch (IOException e) {
-            e.printStackTrace(); // Handle or log the exception as needed
+            e.printStackTrace(); 
         }
     }
 }
