@@ -15,8 +15,14 @@ public class TicketManager {
 
     public static UserManager UserManager = new UserManager();
 
+    public logService logService = new logService();
+
 
     public void buyTicket(Scanner scanner, String email, String eventName) throws SQLException {
+
+
+        String action = "BuyTicket -> Insert";
+        String table = "";
 
         User user = null;
         Event event = null;
@@ -29,8 +35,6 @@ public class TicketManager {
             user = entry.getKey();
             id = entry.getValue();
 
-            System.out.println(id + "Asta e id-ul returnat in hash");
-            System.out.println(user.getEmail() + "asta e mail-ul userului");
 
 
         } catch (Exception e) {
@@ -69,7 +73,11 @@ public class TicketManager {
                     prop = 0;
                 }
                 System.out.println();
+                table = "SilverTicket";
                 connection.createStatement().executeUpdate("INSERT INTO SilverTicket (id, LuckyUpgrade) VALUES ('" + Id + "', '" + prop + "')");
+
+                logService.logDatabaseAction(action,table);
+
             } catch (SQLException e) {
                 System.out.println(e);
             }
@@ -85,7 +93,11 @@ public class TicketManager {
                 if (rs.next()) {
                     Id = rs.getInt("id");
                 }
+                table = "GoldTicket";
                 connection.createStatement().executeUpdate("INSERT INTO GoldTicket (id, seatRangeStart, seatRangeEnd) VALUES ('" + Id + "', '" + ticket.getSeatRange()[0] + "', '" + ticket.getSeatRange()[1] + "')");
+
+                logService.logDatabaseAction(action,table);
+
             } catch (SQLException e) {
                 System.out.println(e);
             }
@@ -106,8 +118,10 @@ public class TicketManager {
                     prop = 0;
                 }
 
+                table = "VIPTicket";
 
                 connection.createStatement().executeUpdate("INSERT INTO VIPTicket (id, seatRangeStart, SeatRangeEnd, freeParking) VALUES ('" + Id + "', '" + ticket.getSeatRange()[0] + "', '" + ticket.getSeatRange()[1] + "', '" + prop + "')");
+                logService.logDatabaseAction(action,table);
             } catch (SQLException e) {
                 System.out.println(e);
             }
@@ -118,9 +132,13 @@ public class TicketManager {
     public void showAttendees() throws SQLException {
 
         ResultSet res = null;
+        String action = "ShowAttendees -> Select";
+        String table = "User, Ticket";
 
         try{
             res =  connection.createStatement().executeQuery("SELECT User.name, Event.eventName FROM User INNER JOIN Ticket ON User.id = Ticket.userId INNER JOIN Event ON Ticket.eventName = Event.eventName");
+
+            logService.logDatabaseAction(action,table);
         }
         catch(Exception e){
             System.out.println(e);
@@ -138,24 +156,38 @@ public class TicketManager {
 
     }
 
-    public void changeTicketBearer(String email, String eventName) throws SQLException {
+    public void changeTicketBearer(String oldMail, String newMail, String eventName) throws SQLException {
 
         User user = null;
         Event event = null;
-        int id = 0;
+        int newId = 0;
+        int oldId = 0;
 
-        HashMap<User, Integer> map = new HashMap<>();
+        HashMap<User, Integer> newUserMap = new HashMap<>();
+        HashMap<User, Integer> oldUserMap = new HashMap<>();
+
+        String action = "ChangeTicketBearer -> Update, Select";
+        String table = "User, Ticket";
+
+
 
         try{
 
-            map = UserManager.getUser(email);
+            newUserMap = UserManager.getUser(newMail);
+            oldUserMap = UserManager.getUser(oldMail);
 
-            Map.Entry<User, Integer> entry = map.entrySet().iterator().next();
-            user = entry.getKey();
-            id = entry.getValue();
+            System.out.println(newUserMap);
+            System.out.println(oldUserMap);
 
-            System.out.println(id + "Asta e id-ul bun");
-            System.out.println(user.getId());
+
+            Map.Entry<User, Integer> newEntry = newUserMap.entrySet().iterator().next();
+            user = newEntry.getKey();
+            newId = newEntry.getValue();
+
+             Map.Entry<User, Integer> oldEntry = oldUserMap.entrySet().iterator().next();
+            oldId = oldEntry.getValue();
+
+
 
          event = EventManager.getEventByName(eventName);
         }
@@ -165,7 +197,8 @@ public class TicketManager {
 
 
         try{
-            connection.createStatement().executeUpdate("UPDATE Ticket SET userId = '"+id+"' WHERE eventName = '"+event.getEventName()+"'");
+            connection.createStatement().executeUpdate("UPDATE Ticket SET userId = '"+newId+"' WHERE eventName = '"+event.getEventName()+"' and userId = '"+oldId+"' ");
+            logService.logDatabaseAction(action,table);
         }
         catch(Exception e){
             System.out.println(e);

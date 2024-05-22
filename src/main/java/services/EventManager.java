@@ -19,10 +19,15 @@ public class EventManager {
     public static dbService dbService;
     public static Connection connection = services.dbService.getConnection();
 
+    public logService logService = new logService();
+
 
     public void registerEvent(Scanner scanner, String name, Date date, String location, double price, int numberOfTickets)
     throws SQLException 
     {
+
+        String action = "Register Event -> Insert";
+        String table = "Event";
 
         System.out.println("Input the event type:[Aero / Auto / Special / Concert]");
 
@@ -63,12 +68,16 @@ public class EventManager {
 
             try{
                     connection.createStatement().executeUpdate("INSERT INTO Event (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 0, '0', 'Aero')");
+                    table = "Event";
+                    logService.logDatabaseAction(action,table);
                     ResultSet eventIdResultSet = connection.createStatement().executeQuery("SELECT id FROM Event ORDER BY id DESC");
                     int eventId = 0;
                     if (eventIdResultSet.next()) {
                         eventId = eventIdResultSet.getInt("id");
                     }
                     connection.createStatement().executeUpdate("INSERT INTO AeroEvent (id, airline, isInternational) VALUES ('" + eventId + "', '" + airline + "', '" + isInternationalInt + "')");
+                    table = "AeroEvent";
+                    logService.logDatabaseAction(action,table);
                     connection.createStatement().executeUpdate("INSERT INTO AeroEventPilots (eventId, pilotName) VALUES ('" + eventId + "', '" + pilots + "')");
             }
 
@@ -77,6 +86,8 @@ public class EventManager {
             }
 
         } else if(type.equals("Auto")){
+
+            table = "AutoEvent";
            
 
             System.out.println("Input the car brand:");
@@ -117,6 +128,7 @@ public class EventManager {
 
             connection.createStatement().executeUpdate("INSERT INTO AutomotiveEvent (id, carBrand, isElectric) VALUES ('" + eventId + "', '" + carBrand + "', '" + isElectricInt + "')");
             connection.createStatement().executeUpdate("INSERT INTO AutomotiveEventSponsors (eventId, sponsorName) VALUES ('" + eventId + "', '" + sponsors + "')");
+            logService.logDatabaseAction(action,table);
           }
           catch(SQLException e){
               System.out.println(e);
@@ -134,6 +146,7 @@ public class EventManager {
           //  SpecialEvent event = new SpecialEvent(name, date, location, price, numberOfTickets, specialType, description);
             
             try{
+                table = "SpecialEvent";
                 connection.createStatement().executeUpdate("INSERT INTO Event (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 0, '0', 'Special')");
 
                 ResultSet eventIdResultSet = connection.createStatement().executeQuery("SELECT id FROM Event ORDER BY id DESC");
@@ -143,15 +156,17 @@ public class EventManager {
                 }
 
                 connection.createStatement().executeUpdate("INSERT INTO SpecialEvent (id, specialType, specialDescription) VALUES ('" + eventId + "', '" + specialType + "', '" + description + "')");
+                logService.logDatabaseAction(action,table);
             }
             catch(SQLException e){
                 System.out.println(e);
             }
 
 
-        } else if(type.equals("Concert")){
+        } else if(type.equals("Musical")){
             System.out.println("Input the band name:");
             String bandName = scanner.nextLine();
+
 
             System.out.println("Input the number of songs:");
             String songs = scanner.nextLine();
@@ -164,8 +179,8 @@ public class EventManager {
            // MusicalEvent event = new MusicalEvent(name, date, location, price, numberOfTickets, bandName, genre, Intsongs);
             
             try{
+                table = "MusicalEvent";
                 connection.createStatement().executeUpdate("INSERT INTO Event (eventName, eventDate, eventLocation, basicTicketPrice, numberOfTickets, isSoldOut, ticketsSold, eventType) VALUES ('" + name + "', '" + date + "', '" + location + "', '" + price + "', '" + numberOfTickets + "', 0, '0', 'Musical')");
-
                 int eventId = 0;
 
                 ResultSet eventIdResultSet = connection.createStatement().executeQuery("SELECT id FROM Event ORDER BY id DESC");
@@ -174,6 +189,7 @@ public class EventManager {
                 }
 
                 connection.createStatement().executeUpdate("INSERT INTO MusicalEvent (id, bandName, musicGenre, numberOfSongs) VALUES ('" + eventId + "', '" + bandName + "', '" + genre + "', '" + Intsongs + "')");
+                logService.logDatabaseAction(action,table);
             }
             catch(SQLException e){
                 System.out.println(e);
@@ -194,11 +210,15 @@ public class EventManager {
         ResultSet rs = null;
         int id = 0;
 
+        String action = "Delete Event -> Delete";
+        String table = "Event";
+
 
         String event_find = "Select eventType , id FROM Event WHERE eventName = '" + name + "'";
 
         try{
             rs = connection.createStatement().executeQuery(event_find);
+
         }catch(SQLException e){
             System.out.println(e);
         }
@@ -211,12 +231,14 @@ public class EventManager {
 
         if(type.equals("Special")){
 
+            table = "SpecialEvent";
             String lowerQuery = "DELETE FROM SpecialEvent WHERE id = '" + id + "'";
             String query = "DELETE FROM Event WHERE id = '" + id + "'";
 
             try {
                 connection.createStatement().executeUpdate(lowerQuery);
                 connection.createStatement().executeUpdate(query);
+                logService.logDatabaseAction(action,table);
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -224,18 +246,22 @@ public class EventManager {
         }
 
         else if(type.equals("Musical")){
+
+            table = "MusicalEvent";
             String lowerQuery = "DELETE FROM MusicalEvent WHERE id = '" + id + "'";
             String query = "DELETE FROM Event WHERE id = '" + id + "'";
 
             try{
                 connection.createStatement().executeUpdate(lowerQuery);
                 connection.createStatement().executeUpdate(query);
+                logService.logDatabaseAction(action,table);
             }
             catch(SQLException e){
                 System.out.println(e);
             }
         }
         else if(type.equals("Automotive")){
+            table = "AutomotiveEvent" ;
             String lowerQuery = "DELETE FROM AutomotiveEvent WHERE id = '" + id + "'";
             String query = "DELETE FROM Event WHERE id = '" + id + "'";
 
@@ -243,12 +269,15 @@ public class EventManager {
                 connection.createStatement().executeUpdate("DELETE FROM AutomotiveEventSponsors WHERE eventId = '" + id + "'");
                 connection.createStatement().executeUpdate(lowerQuery);
                 connection.createStatement().executeUpdate(query);
+                logService.logDatabaseAction(action,table);
             }
             catch(SQLException e){
                 System.out.println(e);
             }
         }
        else if (type.equals("Aero")){
+
+           table = "AeroEvent";
            String lowerQuery = "DELETE FROM AeroEvent WHERE id = '" + id + "'";
            String query = "DELETE FROM Event WHERE id = '" + id + "'";
 
@@ -256,6 +285,7 @@ public class EventManager {
                connection.createStatement().executeUpdate("DELETE FROM AeroEventPilots WHERE eventId = '" + id + "'");
                connection.createStatement().executeUpdate(lowerQuery);
                connection.createStatement().executeUpdate(query);
+               logService.logDatabaseAction(action,table);
            }
            catch(SQLException e){
                System.out.println(e);
@@ -266,15 +296,24 @@ public class EventManager {
     public void updateEvent(String name, Date date, String location, double price) {
             
             String query = "UPDATE Event SET date = '" + date + "', location = '" + location + "', price = '" + price + "' WHERE name = '" + name + "'";
+
+            String table = "Event";
+            String action = "Update Event -> Update";
     
             try {
                 connection.createStatement().executeUpdate(query);
+                logService.logDatabaseAction(action,table);
             } catch (Exception e) {
                 System.out.println(e);
             }
     }
 
     public List<Event> getEventsEnrolled() throws SQLException {
+
+        String action = "Get Events -> Select";
+
+        String table = "Events, all events";
+
         String query = "SELECT * FROM Event";
         ResultSet result = null;
         List<Event> EventList = new ArrayList<>();
@@ -437,6 +476,7 @@ public class EventManager {
                     }
                 }
             }
+            logService.logDatabaseAction(action,table);
         } catch (SQLException e) {
             System.out.println(e);
         } finally {

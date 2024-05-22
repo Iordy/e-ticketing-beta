@@ -163,13 +163,13 @@ public final class Menu {
                     break;
                 case "11":
                     System.out.println("Enter the user email:");
-                    email = scanner.nextLine();
-                    System.out.println("Enter the second user name:");
+                    String otherEmail = scanner.nextLine();
+                    System.out.println("Enter the second user email:");
                     String email2 = scanner.nextLine();
                     System.out.println("Enter the event name:");
                     String eventName2 = scanner.nextLine();
 
-                    ticketManager.changeTicketBearer(email2, eventName2);
+                    ticketManager.changeTicketBearer(otherEmail, email2, eventName2);
                 
                     break;
                 case "12":
@@ -180,8 +180,7 @@ public final class Menu {
                     break;
             }
 
-           
-            System.out.println("Am iesit din switch");
+
      
      
         }
